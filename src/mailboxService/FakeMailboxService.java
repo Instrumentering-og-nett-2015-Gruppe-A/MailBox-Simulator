@@ -37,7 +37,6 @@ public class FakeMailboxService implements MailboxService{
 
 	@Override
 	public int registerMailbox() {
-		// TODO Auto-generated method stub
 		m_rfids.put(m_currentId, new ArrayList<String>());
 		m_mailboxDatas.put(m_currentId, new MailboxData("Statustext", true, 0));
 		m_mailboxes.add(m_currentId);
