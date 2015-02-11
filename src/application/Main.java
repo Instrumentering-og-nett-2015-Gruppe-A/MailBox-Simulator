@@ -9,7 +9,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 
 
 public class Main extends Application {
@@ -22,6 +22,8 @@ public class Main extends Application {
 			Parent root = (Parent) fxmlLoader.load(this.getClass().getResourceAsStream("MailboxSimButtons.fxml"));
 			
 			newRfid.setDisable(true);
+			scanner.setDisable(true);
+			
 			
 			Scene scene = new Scene(root,400,500);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
@@ -40,13 +42,15 @@ public class Main extends Application {
 	private Button insideButton = new Button();
 	
 	@FXML
-	private Button newRfid = new Button();
+	private Button scanBtn = new Button();
 	
 	@FXML
-	private Button wrongRfid = new Button();
+	private TextField scanner = new TextField();
 	
 	@FXML
-	private ComboBox<String> regRfid = new ComboBox<String>();
+	private TextField newRfid = new TextField();
+	
+	
 	
 	
 	
@@ -55,13 +59,21 @@ public class Main extends Application {
 	}
 	
 	@FXML public void scanNewRfid(ActionEvent event){
+		
 	}
 	
-	@FXML public void scanRegRfid(ActionEvent event){
+	@FXML public void scanRfid(ActionEvent event){
+		scanner.setDisable(false);
 	}
 	
-	@FXML public void scanWrong(ActionEvent event){
+	@FXML public void checkRfid(ActionEvent event){
+		
 	}
+	
+	@FXML public void isPost(ActionEvent event){
+		
+	}
+	
 	
 	
 	public static void main(String[] args) {
