@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="499.0" prefWidth="399.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+   <children>
+      <CheckBox layoutX="60.0" layoutY="70.0" mnemonicParsing="false" text="Er det post?" />
+      <Label alignment="CENTER" layoutX="139.0" layoutY="39.0" text="Mailbox Simulator" />
+      <Button fx:id="insideButton" layoutX="62.0" layoutY="128.0" mnemonicParsing="false" onAction="#insideBtnPushed" text="Knapp" />
+      <Label layoutX="145.0" layoutY="133.0" text="Trykk her for å legge til nytt kort" />
+      <ComboBox fx:id="regRfid" layoutX="64.0" layoutY="257.0" onAction="#scanRegRfid" prefWidth="150.0" promptText="RFID" />
+      <Button fx:id="newRfid" layoutX="62.0" layoutY="194.0" mnemonicParsing="false" onAction="#scanNewRfid" text="RFID" />
+      <Label layoutX="139.0" layoutY="199.0" text="Scanner ny Rfid" />
+      <Label layoutX="231.0" layoutY="262.0" text="Scanne registrert Rfid" />
+      <Button fx:id="wrongRfid" layoutX="61.0" layoutY="323.0" mnemonicParsing="false" onAction="#scanWrong" text="Feil RFID" />
+      <Label layoutX="160.0" layoutY="328.0" text="Scanne &quot;feil&quot; Rfid" />
+   </children>
+</AnchorPane>
