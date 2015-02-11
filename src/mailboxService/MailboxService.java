@@ -7,6 +7,6 @@ public interface MailboxService {
 	public ArrayList<String> getRFIDForMailbox(int mailboxID);
 	public MailboxData getMailboxData(int mailboxID);
 	public int registerMailbox();
-	public void updateMailboxStatus();
+	public void updateMailboxStatus(boolean hasMail);
 }
 
