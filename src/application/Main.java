@@ -13,6 +13,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
 
@@ -39,7 +40,7 @@ public class Main extends Application {
 			
 			
 			
-			Scene scene = new Scene(root,400,500);
+			Scene scene = new Scene(root,400,600);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.show();
@@ -64,6 +65,12 @@ public class Main extends Application {
 	@FXML
 	private TextField newRfid = new TextField();
 	
+	@FXML
+	private TextArea lcdPanel = new TextArea();
+	
+	@FXML
+	private Button lcdPanelBtn = new Button();
+	
 	
 	
 	
@@ -73,16 +80,22 @@ public class Main extends Application {
 	
 	@FXML public void scanNewRfid(ActionEvent event){
 		mailboxService.registerRFID(newRfid.getText(),mailboxId);
+		System.out.println("New Rfid registered.");
 	}
 	
 	@FXML public void scanRfid(ActionEvent event){
 		scanner.setDisable(false);
 	}
 	
-	@FXML public void checkRfid(ActionEvent event){
+	@FXML public boolean checkRfid(ActionEvent event){
 		ArrayList<String> m_rfids = mailboxService.getRFIDForMailbox(mailboxId);
 		if (m_rfids.contains(scanner.getText())){
 			System.out.println("Opens mailBox.");
+			return true;
+		}
+		else {
+			System.out.println("Wrong card, Rfid not found.");
+			return false;
 		}
 			
 	}
@@ -90,12 +103,16 @@ public class Main extends Application {
 	@FXML public void isPost(ActionEvent event){
 		if (postSensor.isSelected() == true){
 			mailboxService.updateMailboxStatus(true);
-			System.out.println("You have post");
+			System.out.println("You have post.");
 		}	
 		else {
 			mailboxService.updateMailboxStatus(false);
-			System.out.println("You don't have post");
+			System.out.println("You don't have post.");
 		}
+	}
+	
+	@FXML public void lcdPanelUpdate(ActionEvent event){
+		lcdPanel.setText(mailboxService.getMailboxData(mailboxId).getLCDText());
 	}
 	
 	
