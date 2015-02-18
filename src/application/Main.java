@@ -4,6 +4,9 @@ import java.util.ArrayList;
 
 import mailboxService.FakeMailboxService;
 import mailboxService.MailboxService;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,6 +18,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.util.Duration;
 
 
 
@@ -38,6 +42,14 @@ public class Main extends Application {
 			newRfid.setDisable(true);
 			scanner.setDisable(true);
 			
+
+			
+			Timeline timeline = new Timeline(new KeyFrame(
+			        Duration.millis(2500),
+			        ae -> updateMailboxData(mailboxId)));
+			timeline.setCycleCount(Animation.INDEFINITE);
+			timeline.play();
+
 			
 			
 			Scene scene = new Scene(root,400,600);
@@ -50,6 +62,8 @@ public class Main extends Application {
 	}
 	
 
+	
+	
 	@FXML
 	private CheckBox postSensor = new CheckBox();
 	
@@ -67,10 +81,6 @@ public class Main extends Application {
 	
 	@FXML
 	private TextArea lcdPanel = new TextArea();
-	
-	@FXML
-	private Button lcdPanelBtn = new Button();
-	
 	
 	
 	
@@ -100,6 +110,10 @@ public class Main extends Application {
 			
 	}
 	
+	public void updateMailboxData(int mailboxId){
+		lcdPanel.setText(mailboxService.getMailboxData(mailboxId).getLCDText());
+	}
+	
 	@FXML public void isPost(ActionEvent event){
 		if (postSensor.isSelected() == true){
 			mailboxService.updateMailboxStatus(true);
@@ -110,12 +124,6 @@ public class Main extends Application {
 			System.out.println("You don't have post.");
 		}
 	}
-	
-	@FXML public void lcdPanelUpdate(ActionEvent event){
-		lcdPanel.setText(mailboxService.getMailboxData(mailboxId).getLCDText());
-	}
-	
-	
 	
 	public static void main(String[] args) {
 		launch(args);
