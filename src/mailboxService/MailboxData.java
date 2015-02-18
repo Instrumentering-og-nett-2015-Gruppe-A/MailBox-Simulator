@@ -1,8 +1,5 @@
 package mailboxService;
 
-import java.util.Date;
-
-import jdk.nashorn.internal.runtime.regexp.joni.constants.OPSize;
 
 public class MailboxData {
 	private String m_lcdText;
