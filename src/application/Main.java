@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import mailboxService.FakeMailboxService;
 import mailboxService.MailboxService;
+import mailboxService.RealMailboxService;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -25,7 +26,7 @@ import javafx.util.Duration;
 
 public class Main extends Application {
 	
-	public MailboxService mailboxService = new FakeMailboxService();
+	public MailboxService mailboxService = new RealMailboxService();
 
 	private int mailboxId;
 	
@@ -62,7 +63,6 @@ public class Main extends Application {
 	}
 	
 
-	
 	
 	@FXML
 	private CheckBox postSensor = new CheckBox();
