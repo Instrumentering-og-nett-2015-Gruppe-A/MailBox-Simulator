@@ -14,9 +14,7 @@ public class RealMailboxService implements MailboxService {
 
 	DatagramSocket socket;
 	private String ServerIP;
-	private int Port;
 	private int mailboxID;
-	HttpURLConnection connection = null;
 	
 	@Override
 	public void registerRFID(String rfid, int mailboxID) {
@@ -58,19 +56,11 @@ public class RealMailboxService implements MailboxService {
 			socket.receive(packet);
 			
 			ServerIP = packet.getAddress().getHostAddress();
-			Port = packet.getPort();
 			
 			System.out.println("Accepted broadcast!");
 			System.out.println("Broadcast IP = " + packet.getAddress().getHostAddress());
-			System.out.println("Broadcast Port = " + packet.getPort());
 			
-			
-			URL url;
-			url = new URL(ServerIP+"/mailbox");
-			
-			
-			connection = (HttpURLConnection)url.openConnection();
-			//URLConnection connection = new URL(ServerIP).openConnection();
+			URLConnection connection = new URL(ServerIP+"/5000").openConnection();
 			System.out.println("URLconnection works");
 			connection.setRequestProperty("Accept-Charset", java.nio.charset.StandardCharsets.UTF_8.name());
 			InputStream response = connection.getInputStream();
