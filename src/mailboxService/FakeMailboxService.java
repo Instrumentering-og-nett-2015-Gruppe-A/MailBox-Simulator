@@ -30,10 +30,6 @@ public class FakeMailboxService implements MailboxService{
 		return mailboxRFIDs;
 	}
 
-	@Override
-	public MailboxData getMailboxData(int mailboxID) {
-		return m_mailboxDatas.get(mailboxID);
-	}
 
 	@Override
 	public int registerMailbox() {
@@ -44,7 +40,7 @@ public class FakeMailboxService implements MailboxService{
 	}
 
 	@Override
-	public void updateMailboxStatus(boolean hasMail) {
+	public void updateMailboxStatus(boolean hasMail, int mailboxID) {
 		
 		
 	}

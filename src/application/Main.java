@@ -2,12 +2,12 @@ package application;
 	
 import java.util.ArrayList;
 
-import mailboxService.FakeMailboxService;
 import mailboxService.MailboxService;
 import mailboxService.RealMailboxService;
-import javafx.animation.Animation;
+/*import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.util.Duration;*/
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -19,7 +19,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.util.Duration;
+
 
 
 
@@ -29,6 +29,8 @@ public class Main extends Application {
 	public MailboxService mailboxService = new RealMailboxService();
 
 	private int mailboxId;
+	private ArrayList<String> m_rfids;
+	
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -36,6 +38,7 @@ public class Main extends Application {
 			
 						
 			mailboxId = mailboxService.registerMailbox();
+			System.out.println("MailboxId from main is:"+mailboxId);
 			FXMLLoader fxmlLoader = new FXMLLoader();
 			fxmlLoader.setController(this);
 			Parent root = (Parent) fxmlLoader.load(this.getClass().getResourceAsStream("MailboxSimButtons.fxml"));
@@ -43,16 +46,12 @@ public class Main extends Application {
 			newRfid.setDisable(true);
 			scanner.setDisable(true);
 			
-
-			
-			Timeline timeline = new Timeline(new KeyFrame(
+			/*Timeline timeline = new Timeline(new KeyFrame(
 			        Duration.millis(2500),
 			        ae -> updateMailboxData(mailboxId)));
 			timeline.setCycleCount(Animation.INDEFINITE);
-			timeline.play();
+			timeline.play();*/
 
-			
-			
 			Scene scene = new Scene(root,400,600);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
@@ -98,7 +97,11 @@ public class Main extends Application {
 	}
 	
 	@FXML public boolean checkRfid(ActionEvent event){
-		ArrayList<String> m_rfids = mailboxService.getRFIDForMailbox(mailboxId);
+		ArrayList<String> new_rfids = mailboxService.getRFIDForMailbox(mailboxId);
+		if (new_rfids != null){
+			m_rfids = new_rfids;
+		}
+		
 		if (m_rfids.contains(scanner.getText())){
 			System.out.println("Opens mailBox.");
 			return true;
@@ -110,17 +113,17 @@ public class Main extends Application {
 			
 	}
 	
-	public void updateMailboxData(int mailboxId){
-		lcdPanel.setText(mailboxService.getMailboxData(mailboxId).getLCDText());
-	}
+	//public void updateMailboxData(int mailboxId){
+	//	lcdPanel.setText(mailboxService.getMailboxData(mailboxId).getLCDText());
+	//}
 	
 	@FXML public void isPost(ActionEvent event){
 		if (postSensor.isSelected() == true){
-			mailboxService.updateMailboxStatus(true);
+			mailboxService.updateMailboxStatus(true, mailboxId);
 			System.out.println("You have post.");
 		}	
 		else {
-			mailboxService.updateMailboxStatus(false);
+			mailboxService.updateMailboxStatus(false,mailboxId);
 			System.out.println("You don't have post.");
 		}
 	}

@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.*;
 
 import org.json.*;
@@ -14,41 +15,52 @@ public class RealMailboxService implements MailboxService {
 
 	DatagramSocket socket;
 	private String ServerIP;
-	private int mailboxID;
+	private String protocol = "http://";
+	
 	
 	@Override
 	public void registerRFID(String rfid, int mailboxID) {
-		// TODO 
-		//  rfid
-		// lag json
-		// send new rfid to server
+		String host = ":5000";
+		String method = "PUT";
+		String body = "{\"rfid\":\""+rfid+"\"}";	
+		getJSON(protocol+ServerIP+host+"/mailbox/"+mailboxID, method, body);
 	}
 
 	@Override
 	public ArrayList<String> getRFIDForMailbox(int mailboxID) {
-		// TODO
-		// Make http request
-		// Parse json to arraylist
+		
+		String host = ":5000";
+		String method = "GET";
 		
 		
+		String url = protocol+ServerIP+host+"/mailbox/"+mailboxID;
 		
+		System.out.println("Dette er url for å hente rfid:" +url);
 		
-		return null;
+		JSONObject jobj = getJSON(url, method);
+		
+		ArrayList<String> m_rfids = new ArrayList<String>();
+		JSONArray rfids = null;
+		try {
+			rfids = jobj.getJSONArray("keys");
+			for(int i = 0; i < rfids.length(); i++ ){
+				m_rfids.add(rfids.getJSONObject(i).getString("rfid"));
+			}
+		} catch (JSONException e) {
+			System.out.println("Cannnot get updated rfidkeys. Using old keys.");
+			e.printStackTrace();
+		}
+		return m_rfids;
 	}
 
-	@Override
-	public MailboxData getMailboxData(int mailboxID) {
-		// TODO 
-		//Make http request
-		//Parse json to mailboxdata
-		return null;
-	}
 
 	@Override
 	public int registerMailbox() {
-		// TODO
-		try{
-			
+	
+		int mailboxId = -1;
+		String host = ":5000/mailbox";
+		
+		try{	
 			System.out.println("Registering mailbox");
 			socket = new DatagramSocket(53005, InetAddress.getByName("0.0.0.0"));
 			byte[] recvBuf = new byte[15000];
@@ -58,29 +70,16 @@ public class RealMailboxService implements MailboxService {
 			ServerIP = packet.getAddress().getHostAddress();
 			
 			System.out.println("Accepted broadcast!");
-			System.out.println("Broadcast IP = " + packet.getAddress().getHostAddress());
+			System.out.println("Broadcast IP = " + ServerIP);
 			
-			URLConnection connection = new URL(ServerIP+"/5000").openConnection();
-			System.out.println("URLconnection works");
-			connection.setRequestProperty("Accept-Charset", java.nio.charset.StandardCharsets.UTF_8.name());
-			InputStream response = connection.getInputStream();
+			String url = protocol+ServerIP+host;
+			String method = "POST"; 
 			
-			
-			
-			StringBuilder sb = new StringBuilder();
-            String line;
-            BufferedReader reader = new BufferedReader(new InputStreamReader(response, "UTF-8"));
-            while ((line = reader.readLine()) != null) {
-                sb.append(line);
-            }
-            String responseString = sb.toString();
+			JSONObject jobj = getJSON(url, method);
+            String mailboxIdString = jobj.getString("id");
             
-            System.out.println(responseString);
-            
-            JSONObject jobj = new JSONObject();
-            String mailboxIDString = jobj.getJSONObject(responseString).getString("id");
-            
-            mailboxID = Integer.parseInt(mailboxIDString);
+            mailboxId = Integer.parseInt(mailboxIdString);
+            System.out.println("Got new mailboxId. It is:"+mailboxId);
 		}
 		catch (IOException ex){
 			System.out.println("No url connection!");
@@ -88,20 +87,64 @@ public class RealMailboxService implements MailboxService {
 			System.out.println("Cannot get mailboxIP.");
 			e.printStackTrace();
 		}
-		
-		
-		// accept broadcast
-		// save IP to "serverAddress"
-		return mailboxID;
+		if (mailboxId == -1){
+			throw new RuntimeException("failed to get new id");
+		}
+		return mailboxId;
 	}
 
 	@Override
-	public void updateMailboxStatus(boolean hasMail) {
-		// TODO 
-		// has post
-		// opprett json av has_post
-		// send json til server
+	public void updateMailboxStatus(boolean hasMail, int mailboxID) {
 		
+		String host = ":5000";
+		String method = "PUT";
+		String body = "{\"has_mail\":\""+hasMail+"\"}";	
+		getJSON(protocol+ServerIP+host+"/mailbox/"+mailboxID, method, body);	
 	}
-
+	public JSONObject getJSON(String url, String method){
+		return getJSON(url, method, null);
+	}
+	public JSONObject getJSON(String url, String method, String body){
+		
+		JSONObject jobj = null;
+		
+		try{
+		
+			HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+			connection.setRequestMethod(method);
+			connection.setRequestProperty("Accept-Charset", java.nio.charset.StandardCharsets.UTF_8.name());
+			System.out.println("Made connection and set to "+method);
+			
+			if (body !=null){
+				connection.setDoOutput(true);
+				connection.setRequestProperty("Content-type", "application/json");
+				connection.setRequestProperty("Accept", "application/json");
+				OutputStream output = connection.getOutputStream();
+				byte[] data = body.getBytes("UTF-8");
+				output.write(data);
+			}	
+				InputStream response = connection.getInputStream();
+				System.out.println("Got an inputStream");
+				
+				StringBuilder sb = new StringBuilder();
+		        String line;
+		        BufferedReader reader = new BufferedReader(new InputStreamReader(response, "UTF-8"));
+		        System.out.println("inside the buffReader");
+		        while ((line = reader.readLine()) != null) {
+		            sb.append(line);
+		        }
+		        String responseString = sb.toString();
+		        System.out.println("Makes a string from response:" +responseString);
+		        
+		        jobj = new JSONObject(responseString);
+			
+		}
+        catch (IOException ex){
+			System.out.println("No url connection!");
+		} catch (JSONException e) {
+			System.out.println("Cannot get mailboxIP.");
+			e.printStackTrace();
+		}
+		return jobj;
+	}
 }
