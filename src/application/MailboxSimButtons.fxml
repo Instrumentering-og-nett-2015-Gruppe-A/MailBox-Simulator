@@ -1,34 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import javafx.scene.effect.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="600.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="700.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <CheckBox fx:id="postSensor" layoutX="60.0" layoutY="70.0" mnemonicParsing="false" onAction="#isPost" text="Er det post?" />
-      <Label alignment="CENTER" layoutX="139.0" layoutY="39.0" text="Mailbox Simulator" />
-      <Button fx:id="insideButton" layoutX="62.0" layoutY="128.0" mnemonicParsing="false" onAction="#insideBtnPushed" text="Knapp" />
-      <Label layoutX="145.0" layoutY="133.0" text="Trykk her for å legge til nytt kort" />
-      <Button fx:id="scanBtn" layoutX="62.0" layoutY="285.0" mnemonicParsing="false" onAction="#scanRfid" text="Scan" />
-      <TextField fx:id="scanner" layoutX="62.0" layoutY="349.0" onAction="#checkRfid" promptText="Skriv inn Rfid">
+      <CheckBox fx:id="postSensor" layoutX="61.0" layoutY="506.0" mnemonicParsing="false" onAction="#isPost" text="Er det post?" />
+      <Label alignment="CENTER" layoutX="139.0" layoutY="29.0" text="Mailbox Simulator" />
+      <Button fx:id="insideButton" layoutX="62.0" layoutY="221.0" mnemonicParsing="false" onAction="#insideBtnPushed" prefHeight="31.0" prefWidth="80.0" text="Knapp" />
+      <Label layoutX="155.0" layoutY="226.0" text="Trykk her for å legge til nytt kort" />
+      <Button fx:id="scanBtn" layoutX="62.0" layoutY="347.0" mnemonicParsing="false" onAction="#scanRfid" prefHeight="31.0" prefWidth="80.0" text="Scan" />
+      <TextField fx:id="scanner" layoutX="62.0" layoutY="398.0" onAction="#checkRfid" promptText="Skriv inn Rfid">
          <effect>
-            <DropShadow radius="7.6675" width="11.67" />
+            <DropShadow height="10.0" radius="4.5" width="10.0" />
          </effect>
       </TextField>
-      <TextField fx:id="newRfid" layoutX="62.0" layoutY="191.0" onAction="#scanNewRfid" promptText="Skriv inn ny Rfid">
+      <TextField fx:id="newRfid" layoutX="62.0" layoutY="274.0" onAction="#scanNewRfid" promptText="Skriv inn ny Rfid">
          <effect>
-            <DropShadow radius="8.445" width="14.78" />
+            <DropShadow height="10.0" radius="4.5" width="10.0" />
          </effect>
       </TextField>
-      <Label layoutX="145.0" layoutY="294.0" text="Trykk her for å scanne kort" />
-      <TextArea fx:id="lcdPanel" layoutX="56.0" layoutY="476.0" prefHeight="110.0" prefWidth="282.0" promptText="Tekst kommer her">
+      <Label layoutX="155.0" layoutY="350.0" text="Trykk her for å scanne kort" />
+      <TextArea fx:id="lcdPanel" layoutX="66.0" layoutY="565.0" prefHeight="110.0" prefWidth="282.0" promptText="Tekst kommer her">
          <effect>
-            <DropShadow radius="7.6675" width="11.67" />
+            <DropShadow height="10.0" radius="4.5" width="10.0" />
          </effect>
       </TextArea>
-      <Label layoutX="65.0" layoutY="437.0" text="Lcd-skjerm" />
+      <Label layoutX="65.0" layoutY="534.0" text="Lcd-skjerm" />
+      <TextField fx:id="mailboxIdField" layoutX="60.0" layoutY="98.0" onAction="#setMailboxId" prefHeight="31.0" prefWidth="80.0" promptText="ID">
+         <effect>
+            <DropShadow height="10.0" radius="4.5" width="10.0" />
+         </effect></TextField>
+      <Button fx:id="register" layoutX="61.0" layoutY="153.0" mnemonicParsing="false" onAction="#register" text="Registrer" />
+      <TextField fx:id="serverIPField" layoutX="170.0" layoutY="98.0" onAction="#useServerIP" prefHeight="31.0" prefWidth="165.0" promptText="Server IP">
+         <effect>
+            <DropShadow height="10.0" radius="4.5" width="10.0" />
+         </effect>
+      </TextField>
+      <Text layoutX="61.0" layoutY="83.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Bruk eksisterende ID og IP:" />
+      <Text layoutX="168.0" layoutY="174.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Registrer ny postkasse" />
+      <Label fx:id="opensMailbox" layoutX="60.0" layoutY="457.0" text="Åpnet postkasse" />
+      <Label fx:id="wrongRfid" layoutX="200.0" layoutY="457.0" text="Feil kort!" textFill="RED" />
    </children>
 </AnchorPane>

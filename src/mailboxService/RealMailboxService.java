@@ -10,20 +10,18 @@ import java.net.*;
 
 import org.json.*;
 
-
 public class RealMailboxService implements MailboxService {
 
 	DatagramSocket socket;
 	private String ServerIP;
 	private String protocol = "http://";
 	
-	
 	@Override
 	public void registerRFID(String rfid, int mailboxID) {
 		String host = ":5000";
 		String method = "PUT";
 		String body = "{\"rfid\":\""+rfid+"\"}";	
-		getJSON(protocol+ServerIP+host+"/mailbox/"+mailboxID, method, body);
+		getJSON(protocol+ServerIP+host+"/api/mailbox/"+mailboxID, method, body);
 	}
 
 	@Override
@@ -31,12 +29,7 @@ public class RealMailboxService implements MailboxService {
 		
 		String host = ":5000";
 		String method = "GET";
-		
-		
-		String url = protocol+ServerIP+host+"/mailbox/"+mailboxID;
-		
-		System.out.println("Dette er url for å hente rfid:" +url);
-		
+		String url = protocol+ServerIP+host+"/api/mailbox/"+mailboxID;
 		JSONObject jobj = getJSON(url, method);
 		
 		ArrayList<String> m_rfids = new ArrayList<String>();
@@ -47,18 +40,21 @@ public class RealMailboxService implements MailboxService {
 				m_rfids.add(rfids.getJSONObject(i).getString("rfid"));
 			}
 		} catch (JSONException e) {
-			System.out.println("Cannnot get updated rfidkeys. Using old keys.");
+			System.out.println("Cannot get updated rfidkeys. Using old keys.");
 			e.printStackTrace();
 		}
 		return m_rfids;
 	}
 
+	public void setServerIP(String serverIPstr){
+		ServerIP = serverIPstr;
+	}
 
 	@Override
 	public int registerMailbox() {
 	
 		int mailboxId = -1;
-		String host = ":5000/mailbox";
+		String host = ":5000/api/mailbox";
 		
 		try{	
 			System.out.println("Registering mailbox");
@@ -94,22 +90,42 @@ public class RealMailboxService implements MailboxService {
 	}
 
 	@Override
+	public String getLCDText(int mailboxID){
+		String host = ":5000";
+		String method = "GET";
+		String url = protocol+ServerIP+host+"/api/mailbox/"+mailboxID;
+		
+		System.out.println("Url for å hente lcdtekst"+url);
+		JSONObject jobj = getJSON(url, method);
+		String lcdText = ""; 
+		
+		try{
+			lcdText = jobj.getString("display_text");
+		} catch (JSONException e) {
+			System.out.println("Cannot get new lcdText.");
+			e.printStackTrace();
+		}
+		return lcdText;
+	}
+	
+	@Override
 	public void updateMailboxStatus(boolean hasMail, int mailboxID) {
 		
 		String host = ":5000";
 		String method = "PUT";
-		String body = "{\"has_mail\":\""+hasMail+"\"}";	
-		getJSON(protocol+ServerIP+host+"/mailbox/"+mailboxID, method, body);	
+		String body = "{\"has_mail\":"+hasMail+"}";	
+		System.out.println(body);
+		getJSON(protocol+ServerIP+host+"/api/mailbox/"+mailboxID, method, body);	
 	}
+	
 	public JSONObject getJSON(String url, String method){
 		return getJSON(url, method, null);
 	}
+	
 	public JSONObject getJSON(String url, String method, String body){
 		
 		JSONObject jobj = null;
-		
 		try{
-		
 			HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
 			connection.setRequestMethod(method);
 			connection.setRequestProperty("Accept-Charset", java.nio.charset.StandardCharsets.UTF_8.name());
@@ -123,21 +139,17 @@ public class RealMailboxService implements MailboxService {
 				byte[] data = body.getBytes("UTF-8");
 				output.write(data);
 			}	
-				InputStream response = connection.getInputStream();
-				System.out.println("Got an inputStream");
-				
-				StringBuilder sb = new StringBuilder();
-		        String line;
-		        BufferedReader reader = new BufferedReader(new InputStreamReader(response, "UTF-8"));
-		        System.out.println("inside the buffReader");
-		        while ((line = reader.readLine()) != null) {
-		            sb.append(line);
-		        }
-		        String responseString = sb.toString();
-		        System.out.println("Makes a string from response:" +responseString);
-		        
-		        jobj = new JSONObject(responseString);
-			
+			InputStream response = connection.getInputStream();
+			StringBuilder sb = new StringBuilder();
+	        String line;
+	        BufferedReader reader = new BufferedReader(new InputStreamReader(response, "UTF-8"));
+	        while ((line = reader.readLine()) != null) {
+	            sb.append(line);
+	        }
+	        String responseString = sb.toString();
+	        System.out.println("Makes a string from response:" +responseString);
+	        
+	        jobj = new JSONObject(responseString);
 		}
         catch (IOException ex){
 			System.out.println("No url connection!");
